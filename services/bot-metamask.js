@@ -14,7 +14,7 @@ class BotMetaMask {
     async start(pathExtMetamask = "D:\\FEXT\\\extension_10_9_3_0", executablePathChrome = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe") {
         this.browser = await puppeteer.launch({
             headless: false,
-            // executablePath: executablePathChrome,
+            executablePath: executablePathChrome,
             defaultViewport: null,
             args: [
                 `--no-sandbox`,
@@ -70,7 +70,12 @@ class BotMetaMask {
         }, phraseWordsArr)
 
         await this.page.click("#app-content > div > div.main-container-wrapper > div > div > div.confirm-seed-phrase > button");
-        await this.page.waitForXPath('//*[@id="app-content"]/div/div[2]/div/div/button');
+        try {
+            await this.page.waitForXPath('//*[@id="app-content"]/div/div[2]/div/div/button');
+        } catch (err) {
+            return 0;
+        }
+        
         await this.page.click("#app-content > div > div.main-container-wrapper > div > div > button");
         await this.page.click("#popover-content > div > div > section > header > div > button");
         await this.page.click("#app-content > div > div.main-container-wrapper > div > div > div > div.menu-bar > button");
@@ -104,6 +109,7 @@ class BotMetaMask {
         });
         writer.end();
         console.log(adrWallet, phraseWords);
+        return 1;
     }
     async addNetWork(networkName = "BSC", newRPCURL = "https://bsc-dataseed.binance.org/", chainID = "56", symbol = "BNB", blockExplorerURL = "https://bscscan.com") {
         await this.page.goto("chrome-extension://gfcibkpnmenjpdjdagecgboacldppple/home.html#settings/networks/add-network", { waitUntil: 'networkidle2' });
